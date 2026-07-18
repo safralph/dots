@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+# Reads directly from Linux power supply subsystem (no heavy external dependencies)
+if [ -d /sys/class/power_supply/BAT0 ]; then
+    CAPACITY=$(cat /sys/class/power_supply/BAT0/capacity)
+    STATUS=$(cat /sys/class/power_supply/BAT0/status)
+elif [ -d /sys/class/power_supply/BAT1 ]; then
+    CAPACITY=$(cat /sys/class/power_supply/BAT1/capacity)
+    STATUS=$(cat /sys/class/power_supply/BAT1/status)
+else
+    echo "No BAT" && exit 0
+fi
+
+# Show a charging symbol if plugged in
+[ "$STATUS" = "Charging" ] && echo "${CAPACITY}% " || echo "${CAPACITY}%"

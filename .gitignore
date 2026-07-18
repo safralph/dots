@@ -1,0 +1,11 @@
+# Build and config files for dwm
+dwm/dwm
+dwm/*.o
+dwm/config.h
+
+# Build and config files for dwmblocks
+dwmblocks/dwmblocks
+dwmblocks/*.o
+dwmblocks/blocks.h
+dwmblocks/config.h
+dwmblocks/*.bak

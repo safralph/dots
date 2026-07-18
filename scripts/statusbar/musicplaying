@@ -1,0 +1,28 @@
+#!/bin/sh
+
+# Choose active players
+MUSIC_PLAYING_PLAYERS="spotify chromium mpd mpv"
+FORMAT_FILE="/tmp/dwmblocks_mus_format"
+
+[ ! -f "$FORMAT_FILE" ] && echo "0" > "$FORMAT_FILE"
+read -r FORMAT < "$FORMAT_FILE"
+
+[ "$FORMAT" -eq 0 ] && META="{{ trunc(artist,17) }} - {{ trunc(title,17) }}" ||
+META="{{ trunc(album,17) }} - {{ trunc(title,17) }}"
+
+# Check running players instantly without hanging loops
+for PLAYER in $MUSIC_PLAYING_PLAYERS; do
+    if [ "$(playerctl --player="$PLAYER" status 2>/dev/null)" = "Playing" ]; then
+        ICON=" "
+        echo "$ICON$(playerctl metadata --player="$PLAYER" --format "$META" 2>/dev/null)"
+        exit 0
+    fi
+done
+
+# Fallback to MPD paused status if nothing is actively playing
+if playerctl --player=mpd status >/dev/null 2>&1; then
+    ICON="❚❚ "
+    echo "$ICON$(playerctl metadata --player=mpd --format "$META" 2>/dev/null)"
+else
+    echo "  Silence"
+fi
